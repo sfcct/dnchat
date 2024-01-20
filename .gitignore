@@ -20,6 +20,7 @@ parts/
 sdist/
 var/
 models/
+docs/
 wheels/
 share/python-wheels/
 *.egg-info/
@@ -58,6 +59,8 @@ cover/
 
 #models pytorch/other
 *.bin
+*.pdf
+*.txt
 
 # Django stuff:
 *.log
