@@ -6,11 +6,12 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 from transformers import pipeline
 import torch 
 import textwrap 
-from langchain.document_loaders import PyPDFLoader, DirectoryLoader, PDFMinerLoader 
-from langchain.text_splitter import RecursiveCharacterTextSplitter 
-from langchain.embeddings import SentenceTransformerEmbeddings 
-from langchain.vectorstores import Chroma 
-from langchain.llms import HuggingFacePipeline
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
+from langchain.text_splitter import CharacterTextSplitter 
+from langchain_community.embeddings import SentenceTransformerEmbeddings 
+from langchain_community.vectorstores import Chroma 
+from langchain_community.llms import HuggingFacePipeline
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA 
 from constants import CHROMA_SETTINGS
 from streamlit_chat import message
@@ -36,14 +37,22 @@ def data_ingestion():
         for file in files:
             if file.endswith(".pdf"):
                 print(file)
-                loader = PDFMinerLoader(os.path.join(root, file))
-    documents = loader.load()
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=500)
-    texts = text_splitter.split_documents(documents)
-    #create embeddings here
-    embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
+                loader = PyPDFLoader(os.path.join(root, file))
+    doc = loader.load()
+    text_splitter = CharacterTextSplitter(chunk_size=1500, separator="\n")
+    chunks = text_splitter.split_documents(doc)
+
+    # Retrieve embedding function from code env resources
+    emb_model = "sentence-transformers/all-MiniLM-L6-v2"
+    embeddings = HuggingFaceEmbeddings(
+        model_name=emb_model,
+        cache_folder=os.getenv('SENTENCE_TRANSFORMERS_HOME')
+        )
     #create vector store here
-    db = Chroma.from_documents(texts, embeddings, persist_directory=persist_directory, client_settings=CHROMA_SETTINGS)
+    # vector_db_path = r'C:\D\Main\IIMC _ APDS\NLP\RAG_chat_deploy\db'
+    db = Chroma.from_documents(chunks,
+                           embedding=embeddings,
+                           persist_directory='\\db')
     db.persist()
     db=None 
 
