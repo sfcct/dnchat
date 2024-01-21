@@ -75,7 +75,8 @@ def llm_pipeline():
 def qa_llm():
     llm = llm_pipeline()
     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-    db = Chroma(persist_directory="db", embedding_function = embeddings, client_settings=CHROMA_SETTINGS)
+    # db = Chroma.from_documents(chunks,embedding=embeddings,persist_directory='\\db')
+    db = Chroma(persist_directory="\\db", embedding_function = embeddings)#, client_settings=CHROMA_SETTINGS)
     retriever = db.as_retriever()
     qa = RetrievalQA.from_chain_type(
         llm = llm,
