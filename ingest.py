@@ -9,7 +9,7 @@ from langchain_community.vectorstores import Chroma
 FILE_NAME = "DNVGL-ST-F101.pdf"
 # Load the PDF file and split it into smaller chunks
 # docs_folder = dataiku.Folder("docs") # Replace with your input folder id
-f_path = r'C:\D\Main\IIMC _ APDS\NLP\RAG_chat_deploy\docs\\'+FILE_NAME
+f_path = 'docs\\'+FILE_NAME
 if FILE_NAME.split('.')[1]=='pdf':loader = PyPDFLoader(f_path)
 if FILE_NAME.split('.')[1]=='txt':loader = TextLoader(f_path)
 doc = loader.load()
@@ -25,7 +25,7 @@ embeddings = HuggingFaceEmbeddings(
 
 # Index the vector database by embedding then inserting document chunks
 # vector_db_folder = dataiku.Folder("xxx") # Replace with your output folder id 
-vector_db_path = r'C:\D\Main\IIMC _ APDS\NLP\RAG_chat_deploy\db'
+vector_db_path = 'db'
 db = Chroma.from_documents(chunks,
                            embedding=embeddings,
                            persist_directory=vector_db_path)
@@ -39,4 +39,3 @@ matching_docs = db.similarity_search(query)
 print (matching_docs[0])
 # print (matching_docs[1])
 # print (matching_docs[2])
-

@@ -75,7 +75,8 @@ def llm_pipeline():
 def qa_llm():
     llm = llm_pipeline()
     embeddings = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-    db = Chroma(persist_directory="db", embedding_function = embeddings, client_settings=CHROMA_SETTINGS)
+    # db = Chroma.from_documents(chunks,embedding=embeddings,persist_directory='\\db')
+    db = Chroma(persist_directory="\\db", embedding_function = embeddings)#, client_settings=CHROMA_SETTINGS)
     retriever = db.as_retriever()
     qa = RetrievalQA.from_chain_type(
         llm = llm,
@@ -119,10 +120,10 @@ def display_conversation(history):
         message(history["generated"][i],key=str(i))
 
 def main():
-    st.markdown("<h1 style='text-align: center; color: blue;'>Chat with your PDF 🦜📄 </h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: grey;'>Built by <a href='https://github.com/AIAnytime'>AI Anytime with ❤️ </a></h3>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: blue;'>Chat with your PDF 📄 </h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: green;'>Built by Bharat </a></h3>", unsafe_allow_html=True)
 
-    st.markdown("<h2 style='text-align: center; color:red;'>Upload your PDF 👇</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color:red;'>Upload PDF below </h2>", unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("", type=["pdf"])
 
